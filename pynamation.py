@@ -15,59 +15,80 @@ frameDelay = 1000//frameRate
 startTime = 1
 globalTag = 0
 
+# Image rendering with multi-texture animation support
+# Avoid using img()
 class Image:
-    def __init__(self, image, x, y, amount=1, zoom=1, anchor="nw", delay=1):
+
+    def __init__(self, image, x, y, amount = 1, zoom = 1, anchor = "nw", delay = 1, tags=("",)):
+
+        # Store all images for future reference (more than 1 if animated)
         self.images = []
         for i in range(amount):
-            self.images.append(PhotoImage(file=image[0]+str(i) + "." + image[1]))
+            self.images.append(PhotoImage(file = image[0]+str(i) + "." + image[1]))
+
         self.counter = 0
         self.delayCounter = 0
         self.delay = delay
         self.amount = amount
-        self.itself = canvas.create_image(x, y, image = self.images[0], anchor=anchor)
+
+        # Zoom the image if the value specified is greater than 1
         if(zoom != 1 and zoom > 0):
             for i in range(len(self.images)):
                 self.images[i] = self.images[i].zoom(zoom)
+
+        # Zoom out the image if the value specified is less than 1
         elif(zoom < 0):
             for i in range(len(self.images)):
                 self.images[i] = self.images[i].subsample(zoom*-1)
-    def animate(self,xVel,yVel,isTrigger=True):
+        
+        # Draw the image
+        self.itself = canvas.create_image(x, y, image = self.images[0], anchor=anchor, tags = (str(globalTag),) + tags)
+
+    def animate(self, xVel, yVel, isTrigger = True):
+
+        # Reset the counter once the final image is reached
         if(self.counter > self.amount-1):
             self.counter = 0
-        if (isTrigger == True):
+
+        # Only cycle through images unless specified otherwise
+        if(isTrigger == True):
             canvas.itemconfig(self.itself, image = self.images[self.counter])
             self.delayCounter += 1
             if(self.delayCounter == self.delay):
                 self.counter += 1
                 self.delayCounter = 0
-        canvas.move(self.itself,xVel,yVel)
 
+        # Update the position of the image
+        canvas.move(self.itself, xVel, yVel)
+
+# Simplified shape rendering
+# Avoid using rect(), ellipse(), etc.
 class Shape:
 
     @staticmethod
-    def rectangle(x, y, width, height, fill="white", border=("black", 1) ,anchor="nw", tags=("",)):
+    def rectangle(x, y, width, height, fill="white", border=("black", 1), anchor="nw", tags=("",)):
         global globalTag
         bx = x + width
         by = y + height
-        shape = canvas.create_rectangle(x, y, bx, by, fill=fill, outline=border[0], width=border[1], tags=(str(globalTag),)+tags)
+        shape = canvas.create_rectangle(x, y, bx, by, fill=fill, outline=border[0], width=border[1], tags = (str(globalTag),) + tags)
         globalTag += 1
         return shape
 
     @staticmethod
-    def ellipse(x, y, width, height, fill="white", border=("black", 1) ,anchor="nw", tags=("",)):
+    def ellipse(x, y, width, height, fill="white", border=("black", 1), anchor="nw", tags=("",)):
         global globalTag
         bx = x + width/2
         by = y + height/2
         tx = x - width/2
         ty = y - height/2
-        shape = canvas.create_oval(tx, ty, bx, by, fill=fill, outline=border[0], width=border[1], tags=(str(globalTag),)+tags)
+        shape = canvas.create_oval(tx, ty, bx, by, fill=fill, outline=border[0], width=border[1], tags = (str(globalTag),) + tags)
         globalTag += 1
         return shape
 
     @staticmethod
-    def polygon(verticies,fill="white", border=("black", 1) ,tags=("",)):
+    def polygon(verticies,fill="white", border=("black", 1), tags=("",)):
         global canvas
-        shape = canvas.create_polygon(verticies,fill=fill, outline=border[0], width=border[1], tags=(str(globalTag),)+tags)
+        shape = canvas.create_polygon(verticies, fill = fill, outline = border[0], width = border[1], tags = (str(globalTag),) + tags)
         return shape
 
 def title(windowTitle):
