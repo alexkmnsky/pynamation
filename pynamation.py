@@ -19,7 +19,7 @@ globalTag = 0
 # Avoid using img()
 class Image:
 
-    def __init__(self, image, x, y, amount = 1, zoom = 1, anchor = "nw", delay = 1, tags=("",)):
+    def __init__(self, image, x, y, amount = 1, zoom = 1, anchor = "nw", delay = 1, tags = ""):
 
         # Store all images for future reference (more than 1 if animated)
         self.images = []
@@ -42,7 +42,7 @@ class Image:
                 self.images[i] = self.images[i].subsample(zoom*-1)
         
         # Draw the image
-        self.itself = canvas.create_image(x, y, image = self.images[0], anchor=anchor, tags = (str(globalTag),) + tags)
+        self.itself = canvas.create_image(x, y, image = self.images[0], anchor = anchor, tags = tags)
 
     def animate(self, xVel, yVel, isTrigger = True):
 
@@ -66,7 +66,7 @@ class Image:
 class Shape:
 
     @staticmethod
-    def rectangle(x, y, width, height, fill="white", border=("black", 1), anchor="nw", tags=("",)):
+    def rectangle(x, y, width, height, fill = "white", border = ("black", 1), anchor = "nw", tags = ("",)):
         global globalTag
         bx = x + width
         by = y + height
@@ -75,7 +75,7 @@ class Shape:
         return shape
 
     @staticmethod
-    def ellipse(x, y, width, height, fill="white", border=("black", 1), anchor="nw", tags=("",)):
+    def ellipse(x, y, width, height, fill = "white", border = ("black", 1), anchor = "nw", tags = ("",)):
         global globalTag
         bx = x + width/2
         by = y + height/2
@@ -86,7 +86,7 @@ class Shape:
         return shape
 
     @staticmethod
-    def polygon(verticies,fill="white", border=("black", 1), tags=("",)):
+    def polygon(verticies, fill = "white", border = ("black", 1), tags = ("",)):
         global canvas
         shape = canvas.create_polygon(verticies, fill = fill, outline = border[0], width = border[1], tags = (str(globalTag),) + tags)
         return shape
