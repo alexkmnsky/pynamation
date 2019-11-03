@@ -24,7 +24,10 @@ class Image:
         # Store all images for future reference (more than 1 if animated)
         self.images = []
         for i in range(amount):
-            self.images.append(PhotoImage(file = image[0]+str(i) + "." + image[1]))
+            if(isinstance(image, PhotoImage)):
+                self.images.append(image)
+            else:
+                self.images.append(PhotoImage(file = image[0]+str(i) + "." + image[1]))
 
         self.counter = 0
         self.delayCounter = 0
