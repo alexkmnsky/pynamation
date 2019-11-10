@@ -1,6 +1,7 @@
 
 from tkinter import *
 from math import *
+from time import time
 import winsound
 
 tk = Tk()
@@ -108,6 +109,12 @@ def displayFrameRate(t,x,y,color="yellow",anchor="nw"):
     canvas.delete("frameRate")
     text(x, y, tag="frameRate", fill=color, text = str(str(round((1/ (t - startTime)))) + " FPS"), anchor=anchor)
     startTime = t
+
+def getFrameRate():
+    global startTime
+    rate = round(1 / (time() - startTime))
+    startTime = time()
+    return rate
 
 # Requires:
 # import time
